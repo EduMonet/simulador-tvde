@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulador de Rendimento TVDE</title>
+  <title>DriveAI — Simulador de Rendimento TVDE</title>
 
   <!-- Chart.js para gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -28,9 +28,16 @@
     }
     .simulador-container h1 {
       font-size: 26px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       color: #1a73e8;
       text-align: center;
+    }
+    .simulador-container h2 {
+      font-size: 16px;
+      margin-bottom: 25px;
+      color: #555;
+      text-align: center;
+      font-weight: normal;
     }
     .input-group {
       margin-bottom: 15px;
@@ -75,6 +82,12 @@
       margin: 30px auto 0;
       max-width: 100%;
     }
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
     @media (max-width: 600px) {
       .simulador-container {
         padding: 20px;
@@ -88,7 +101,8 @@
 </head>
 <body>
   <div class="simulador-container">
-    <h1>Simulador de Rendimento TVDE</h1>
+    <h1>DriveAI</h1>
+    <h2>O seu Assistente de Automação Inteligente</h2>
 
     <div class="input-group">
       <label for="horas">Horas trabalhadas</label>
@@ -118,6 +132,10 @@
     <canvas id="graficoRendimento"></canvas>
   </div>
 
+  <footer>
+    Desenvolvido por DriveAI — Plataforma de apoio ao motorista TVDE
+  </footer>
+
   <script>
     let grafico;
 
@@ -145,6 +163,8 @@
 
       if (lucroLiquido < 0) {
         mensagem += `<br><span style="color: #d93025; font-weight: bold;">⚠️ Atenção: Estás a operar com prejuízo.</span>`;
+      } else if (lucroHora < 5) {
+        mensagem += `<br><span style="color: #f57c00; font-weight: bold;">⚠️ Rentabilidade baixa: considera rever custos ou metas.</span>`;
       }
 
       document.getElementById('resultado').innerHTML = mensagem;
@@ -201,7 +221,7 @@
       const imgData = canvas.toDataURL("image/png");
 
       doc.setFontSize(14);
-      doc.text("Simulador de Rendimento TVDE", 20, 20);
+      doc.text("DriveAI — Simulador de Rendimento TVDE", 20, 20);
       doc.setFontSize(12);
       doc.text(resultado, 20, 40);
       doc.addImage(imgData, 'PNG', 20, 60, 160, 90);
@@ -214,7 +234,7 @@
       const doc = new jsPDF();
 
       doc.setFontSize(14);
-      doc.text("Relatório de Gráficos", 20, 20);
+      doc.text("Relatório de Gráficos — DriveAI", 20, 20);
 
       const graficos = ['graficoRendimento'];
       let y = 30;
@@ -222,14 +242,3 @@
       for (const id of graficos) {
         const canvas = document.getElementById(id);
         if (canvas) {
-          const imgData = canvas.toDataURL("image/png");
-          doc.addImage(imgData, 'PNG', 20, y, 160, 90);
-          y += 100;
-        }
-      }
-
-      doc.save("graficos-TVDE.pdf");
-    }
-  </script>
-</body>
-</html>
