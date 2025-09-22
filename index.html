@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simulador de Rendimento TVDE</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Chart.js para gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- jsPDF para exportar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -106,6 +112,7 @@
 
     <button class="calcular-btn" onclick="calcularRendimento()">Calcular Rendimento</button>
     <button class="calcular-btn" onclick="exportarPDF()">📄 Exportar para PDF</button>
+    <button class="calcular-btn" onclick="exportarGraficosParaPDF()">📊 Exportar Gráficos para PDF</button>
 
     <div class="resultado" id="resultado"></div>
     <canvas id="graficoRendimento"></canvas>
@@ -192,36 +199,28 @@
 
       doc.save("rendimento-TVDE.pdf");
     }
-    <script>
-async function exportarGraficosParaPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
 
-  doc.setFontSize(14);
-  doc.text("Relatório de Gráficos", 20, 20);
+    async function exportarGraficosParaPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-  const graficos = ['graficoPizza1', 'graficoPizza2']; // Adiciona mais IDs se tiveres mais gráficos
-  let y = 30;
+      doc.setFontSize(14);
+      doc.text("Relatório de Gráficos", 20, 20);
 
-  for (const id of graficos) {
-    const canvas = document.getElementById(id);
-    if (canvas) {
-      const imgData = canvas.toDataURL("image/png");
-      doc.addImage(imgData, 'PNG', 20, y, 160, 90);
-      y += 100;
+      const graficos = ['graficoRendimento']; // Adiciona mais IDs se tiveres mais gráficos
+      let y = 30;
+
+      for (const id of graficos) {
+        const canvas = document.getElementById(id);
+        if (canvas) {
+          const imgData = canvas.toDataURL("image/png");
+          doc.addImage(imgData, 'PNG', 20, y, 160, 90);
+          y += 100;
+        }
+      }
+
+      doc.save("graficos-TVDE.pdf");
     }
-  }
-
-  doc.save("graficos-TVDE.pdf");
-}
-    <button onclick="exportarGraficosParaPDF()">Exportar Gráficos para PDF</button>
-
-</script>
   </script>
 </body>
 </html>
-
-
-
-
-
