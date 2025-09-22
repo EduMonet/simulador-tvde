@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- Chart.js para gráficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -204,8 +207,32 @@
 
       doc.save("rendimento-TVDE.pdf");
     }
+    <script>
+async function exportarGraficosParaPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(14);
+  doc.text("Relatório de Gráficos", 20, 20);
+
+  const graficos = ['graficoPizza1', 'graficoPizza2']; // Adiciona mais IDs se tiveres mais gráficos
+  let y = 30;
+
+  for (const id of graficos) {
+    const canvas = document.getElementById(id);
+    if (canvas) {
+      const imgData = canvas.toDataURL("image/png");
+      doc.addImage(imgData, 'PNG', 20, y, 160, 90);
+      y += 100;
+    }
+  }
+
+  doc.save("graficos-TVDE.pdf");
+}
+</script>
   </script>
 </body>
 </html>
+
 
 
