@@ -137,11 +137,20 @@
       const lucroHora = (lucroLiquido / horas).toFixed(2);
       const lucroKm = (lucroLiquido / km).toFixed(2);
 
-      document.getElementById('resultado').innerHTML = `
+      let mensagem = `
         <strong>Lucro líquido:</strong> ${lucroLiquido.toFixed(2)}€<br>
         <strong>Lucro por hora:</strong> ${lucroHora}€/hora<br>
         <strong>Lucro por quilómetro:</strong> ${lucroKm}€/km
       `;
+
+      if (lucroLiquido < 0) {
+        mensagem += `<br><span style="color: #d93025; font-weight: bold;">⚠️ Atenção: Estás a operar com prejuízo.</span>`;
+      }
+
+      document.getElementById('resultado').innerHTML = mensagem;
+
+      const corLucroHora = lucroHora < 0 ? '#d93025' : '#1a73e8';
+      const corLucroKm = lucroKm < 0 ? '#d93025' : '#34a853';
 
       const ctx = document.getElementById('graficoRendimento').getContext('2d');
       const dados = {
@@ -149,7 +158,7 @@
         datasets: [{
           label: 'Rendimento (€)',
           data: [lucroHora, lucroKm],
-          backgroundColor: ['#1a73e8', '#34a853'],
+          backgroundColor: [corLucroHora, corLucroKm],
           borderRadius: 8
         }]
       };
@@ -207,7 +216,7 @@
       doc.setFontSize(14);
       doc.text("Relatório de Gráficos", 20, 20);
 
-      const graficos = ['graficoRendimento']; // Adiciona mais IDs se tiveres mais gráficos
+      const graficos = ['graficoRendimento'];
       let y = 30;
 
       for (const id of graficos) {
