@@ -4,13 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DriveAI — Simulador de Rendimento TVDE</title>
-
-  <!-- Chart.js para gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- jsPDF para exportar PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -26,18 +21,19 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 30px;
     }
-    .simulador-container h1 {
-      font-size: 26px;
+    h1, h2 {
+      text-align: center;
       margin-bottom: 10px;
-      color: #1a73e8;
-      text-align: center;
     }
-    .simulador-container h2 {
+    h1 {
+      color: #1a73e8;
+      font-size: 26px;
+    }
+    h2 {
       font-size: 16px;
-      margin-bottom: 25px;
       color: #555;
-      text-align: center;
       font-weight: normal;
+      margin-bottom: 30px;
     }
     .input-group {
       margin-bottom: 15px;
@@ -87,15 +83,6 @@
       text-align: center;
       font-size: 14px;
       color: #777;
-    }
-    @media (max-width: 600px) {
-      .simulador-container {
-        padding: 20px;
-      }
-      .calcular-btn {
-        width: 100%;
-        margin-bottom: 10px;
-      }
     }
   </style>
 </head>
@@ -236,9 +223,12 @@
       doc.setFontSize(14);
       doc.text("Relatório de Gráficos — DriveAI", 20, 20);
 
-      const graficos = ['graficoRendimento'];
-      let y = 30;
+      const canvas = document.getElementById("graficoRendimento");
+      const imgData = canvas.toDataURL("image/png");
+      doc.addImage(imgData, 'PNG', 20, 30, 160, 90);
 
-      for (const id of graficos) {
-        const canvas = document.getElementById(id);
-        if (canvas) {
+      doc.save("graficos-TVDE.pdf");
+    }
+  </script>
+</body>
+</html>
