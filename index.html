@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DriveAI — Simulador de Rendimento TVDE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulador de Rendimento TVDE</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -13,7 +13,7 @@
       color: #333;
       padding: 20px;
     }
-    .simulador-container {
+    .container {
       max-width: 800px;
       margin: auto;
       background: #fff;
@@ -21,18 +21,15 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 30px;
     }
-    h1, h2 {
+    h1 {
       text-align: center;
+      color: #1a73e8;
       margin-bottom: 10px;
     }
-    h1 {
-      color: #1a73e8;
-      font-size: 26px;
-    }
     h2 {
-      font-size: 16px;
-      color: #555;
+      text-align: center;
       font-weight: normal;
+      color: #555;
       margin-bottom: 30px;
     }
     .input-group {
@@ -50,7 +47,7 @@
       border-radius: 8px;
       font-size: 15px;
     }
-    .calcular-btn {
+    .btn {
       background: #1a73e8;
       color: #fff;
       border: none;
@@ -58,10 +55,10 @@
       font-size: 15px;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 10px;
       margin-right: 10px;
+      margin-top: 10px;
     }
-    .calcular-btn:hover {
+    .btn:hover {
       background: #155ab6;
     }
     .resultado {
@@ -73,9 +70,8 @@
       font-size: 16px;
       line-height: 1.5;
     }
-    canvas#graficoRendimento {
-      display: block;
-      margin: 30px auto 0;
+    canvas {
+      margin-top: 30px;
       max-width: 100%;
     }
     footer {
@@ -87,33 +83,32 @@
   </style>
 </head>
 <body>
-  <div class="simulador-container">
-    <h1>DriveAI</h1>
-    <h2>O seu Assistente de Automação Inteligente</h2>
+  <div class="container">
+    <h1>Simulador de Rendimento TVDE</h1>
+    <h2>Calcula o teu lucro líquido com base nos teus dados reais</h2>
 
     <div class="input-group">
       <label for="horas">Horas trabalhadas</label>
-      <input type="number" id="horas" placeholder="Ex: 8.5">
+      <input type="number" id="horas" placeholder="Ex: 8">
     </div>
 
     <div class="input-group">
       <label for="km">Quilómetros percorridos</label>
-      <input type="number" id="km" placeholder="Ex: 85">
+      <input type="number" id="km" placeholder="Ex: 165">
     </div>
 
     <div class="input-group">
       <label for="ganhos">Ganhos brutos (€)</label>
-      <input type="number" id="ganhos" placeholder="Ex: 70">
+      <input type="number" id="ganhos" placeholder="Ex: 150">
     </div>
 
     <div class="input-group">
       <label for="custoKm">Custo estimado por km (€)</label>
-      <input type="number" id="custoKm" value="0.30">
+      <input type="number" id="custoKm" placeholder="Ex: 0.25">
     </div>
 
-    <button class="calcular-btn" onclick="calcularRendimento()">Calcular Rendimento</button>
-    <button class="calcular-btn" onclick="exportarPDF()">📄 Exportar para PDF</button>
-    <button class="calcular-btn" onclick="exportarGraficosParaPDF()">📊 Exportar Gráficos para PDF</button>
+    <button class="btn" onclick="calcularRendimento()">Calcular Rendimento</button>
+    <button class="btn" onclick="exportarPDF()">📄 Exportar para PDF</button>
 
     <div class="resultado" id="resultado"></div>
     <canvas id="graficoRendimento"></canvas>
@@ -127,107 +122,82 @@
     let grafico;
 
     function calcularRendimento() {
-      const horas = parseFloat(document.getElementById('horas').value);
-      const km = parseFloat(document.getElementById('km').value);
-      const ganhos = parseFloat(document.getElementById('ganhos').value);
-      const custoKm = parseFloat(document.getElementById('custoKm').value);
+      const horas = parseFloat(document.getElementById('horas')?.value) || 0;
+      const km = parseFloat(document.getElementById('km')?.value) || 0;
+      const ganhos = parseFloat(document.getElementById('ganhos')?.value) || 0;
+      const custoKm = parseFloat(document.getElementById('custoKm')?.value) || 0;
 
-      if (isNaN(horas) || isNaN(km) || isNaN(ganhos) || isNaN(custoKm)) {
-        document.getElementById('resultado').innerHTML = "Preenche todos os campos corretamente.";
-        return;
-      }
+      const custoTotal = km * custoKm;
+      const lucroLiquido = ganhos - custoTotal;
+      const lucroHora = horas ? (lucroLiquido / horas).toFixed(2) : '—';
+      const lucroKm = km ? (lucroLiquido / km).toFixed(2) : '—';
 
-      const despesas = km * custoKm;
-      const lucroLiquido = ganhos - despesas;
-      const lucroHora = (lucroLiquido / horas).toFixed(2);
-      const lucroKm = (lucroLiquido / km).toFixed(2);
-
-      let mensagem = `
+      document.getElementById('resultado').innerHTML = `
+        <strong>Ganhos brutos:</strong> ${ganhos.toFixed(2)}€<br>
+        <strong>Custo total estimado:</strong> ${custoTotal.toFixed(2)}€<br>
         <strong>Lucro líquido:</strong> ${lucroLiquido.toFixed(2)}€<br>
-        <strong>Lucro por hora:</strong> ${lucroHora}€/hora<br>
-        <strong>Lucro por quilómetro:</strong> ${lucroKm}€/km
+        <strong>Lucro por hora:</strong> ${lucroHora}€/h<br>
+        <strong>Lucro por quilómetro:</strong> ${lucroKm}€/km<br><br>
+        <span style="color:#d93025;"><strong>⚠️ O custo total estimado não é lucro.</strong> O lucro líquido é apenas sugerido, porque os custos absorveram quase todo o ganho bruto.</span>
       `;
-
-      if (lucroLiquido < 0) {
-        mensagem += `<br><span style="color: #d93025; font-weight: bold;">⚠️ Atenção: Estás a operar com prejuízo.</span>`;
-      } else if (lucroHora < 5) {
-        mensagem += `<br><span style="color: #f57c00; font-weight: bold;">⚠️ Rentabilidade baixa: considera rever custos ou metas.</span>`;
-      }
-
-      document.getElementById('resultado').innerHTML = mensagem;
-
-      const corLucroHora = lucroHora < 0 ? '#d93025' : '#1a73e8';
-      const corLucroKm = lucroKm < 0 ? '#d93025' : '#34a853';
 
       const ctx = document.getElementById('graficoRendimento').getContext('2d');
       const dados = {
-        labels: ['Lucro por Hora', 'Lucro por Km'],
+        labels: ['Lucro por hora', 'Lucro por km'],
         datasets: [{
-          label: 'Rendimento (€)',
-          data: [lucroHora, lucroKm],
-          backgroundColor: [corLucroHora, corLucroKm],
-          borderRadius: 8
+          label: 'Rendimento',
+          data: [parseFloat(lucroHora) || 0, parseFloat(lucroKm) || 0],
+          backgroundColor: ['#1a73e8', '#34a853']
         }]
       };
 
-      const config = {
+      if (grafico) grafico.destroy();
+      grafico = new Chart(ctx, {
         type: 'bar',
         data: dados,
         options: {
           responsive: true,
           plugins: {
             legend: { display: false },
-            title: {
-              display: true,
-              text: 'Rendimento por Hora vs por Km'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                callback: function(value) {
-                  return value + '€';
-                }
-              }
-            }
+            title: { display: true, text: 'Rendimento por hora vs km' }
           }
         }
-      };
-
-      if (grafico) grafico.destroy();
-      grafico = new Chart(ctx, config);
+      });
     }
 
     async function exportarPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
-      const resultado = document.getElementById("resultado").innerText;
-      const canvas = document.getElementById("graficoRendimento");
-      const imgData = canvas.toDataURL("image/png");
+      const campos = [
+        { label: "Horas trabalhadas", value: document.getElementById('horas')?.value },
+        { label: "Km percorridos", value: document.getElementById('km')?.value },
+        { label: "Ganhos brutos (€)", value: document.getElementById('ganhos')?.value },
+        { label: "Custo estimado por km (€)", value: document.getElementById('custoKm')?.value }
+      ];
 
       doc.setFontSize(14);
-      doc.text("DriveAI — Simulador de Rendimento TVDE", 20, 20);
+      doc.text("Simulador de Rendimento TVDE", 20, 20);
       doc.setFontSize(12);
-      doc.text(resultado, 20, 40);
-      doc.addImage(imgData, 'PNG', 20, 60, 160, 90);
+      doc.text("📋 Dados inseridos:", 20, 30);
 
-      doc.save("rendimento-TVDE.pdf");
-    }
+      let y = 36;
+      campos.forEach(campo => {
+        doc.text(`${campo.label}: ${campo.value || '—'}`, 20, y);
+        y += 6;
+      });
 
-    async function exportarGraficosParaPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      const resultado = document.getElementById('resultado')?.innerText;
+      doc.text("📊 Resultados:", 20, y + 6);
+      doc.text(resultado, 20, y + 12);
 
-      doc.setFontSize(14);
-      doc.text("Relatório de Gráficos — DriveAI", 20, 20);
+      const canvas = document.getElementById('graficoRendimento');
+      const imgData = canvas.toDataURL('image/png');
+      doc.addPage();
+      doc.text("📈 Gráfico de Rendimento", 20, 20);
+      doc.addImage(imgData, 'PNG', 15, 30, 180, 90);
 
-      const canvas = document.getElementById("graficoRendimento");
-      const imgData = canvas.toDataURL("image/png");
-      doc.addImage(imgData, 'PNG', 20, 30, 160, 90);
-
-      doc.save("graficos-TVDE.pdf");
+      doc.save("simulador-rendimento-tvde.pdf");
     }
   </script>
 </body>
