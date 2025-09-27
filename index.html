@@ -188,7 +188,9 @@
       });
 
       const resultado = document.getElementById('resultado')?.innerText;
-      const linhas = doc.splitTextToSize(resultado, 170);
+      const avisoLimpo = "O custo total estimado não é lucro. O lucro líquido é apenas sugerido, porque os custos absorveram quase todo o ganho bruto.";
+      const resultadoLimpo = resultado.replace(/⚠️/g, "").replace(/[\u{1F600}-\u{1F6FF}]/gu, "") + "\n\n" + avisoLimpo;
+      const linhas = doc.splitTextToSize(resultadoLimpo, 170);
       doc.text("📊 Resultados:", 20, y + 6);
       doc.text(linhas, 20, y + 12);
 
@@ -202,4 +204,4 @@
     }
   </script>
 </body>
-</html>
+</html
